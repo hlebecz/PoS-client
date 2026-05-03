@@ -1,4 +1,4 @@
-package kurs.client.ui.login;
+package kurs.client.ui;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import kurs.client.domain.dto.request.LoginRequest;
 import kurs.client.network.ServerClient;
 import kurs.client.ui.component.BaseController;
-import kurs.client.ui.main.MainWindow;
 
 public class LoginController extends BaseController {
 

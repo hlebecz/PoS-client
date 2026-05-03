@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="kurs.client.ui.SaleController"
+            stylesheets="@../css/app.css">
+    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+
+            <!-- Новая продажа -->
+            <Tab text="🛒  Новая продажа">
+                <VBox spacing="14" fillWidth="true">
+                    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+                    <Label text="Новая продажа" styleClass="section-title"/>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Товар:"/>
+                        <TextField fx:id="productIdField" promptText="ID товара (UUID)"
+                                   prefWidth="280"/>
+                        <Label text="Кол-во:"/>
+                        <TextField fx:id="quantityField" text="1" prefWidth="70"/>
+                        <Button text="Добавить" styleClass="btn-secondary"
+                                onAction="#handleAddToCart"/>
+                    </HBox>
+
+                    <TableView fx:id="cartTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colProductId"  text="ID товара"/>
+                            <TableColumn fx:id="colQty"        text="Кол-во" maxWidth="80"/>
+                            <TableColumn fx:id="colCartDelete" text=""       maxWidth="50"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+
+                    <Separator/>
+
+                    <HBox spacing="12" alignment="CENTER_RIGHT">
+                        <Label fx:id="saleStatusLabel" styleClass="error-label" HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="totalLabel"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;"/>
+                        <Button text="Очистить" styleClass="btn-secondary"
+                                onAction="#handleClearCart"/>
+                        <Button text="Провести продажу" styleClass="btn-success"
+                                onAction="#handleConfirmSale"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- История -->
+            <Tab text="📋  История продаж">
+                <VBox spacing="12" fillWidth="true">
+                    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+                    <Label text="История продаж" styleClass="section-title"/>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Магазин:"/>
+                        <TextField fx:id="storeIdField" promptText="ID магазина (UUID)"
+                                   prefWidth="280"/>
+                        <Button text="Загрузить" styleClass="btn-primary"
+                                onAction="#handleLoadHistory"/>
+                    </HBox>
+
+                    <TableView fx:id="historyTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colSaleId"      text="ID"/>
+                            <TableColumn fx:id="colCashier"     text="Кассир"/>
+                            <TableColumn fx:id="colTotal"       text="Сумма"/>
+                            <TableColumn fx:id="colDate"        text="Дата"/>
+                            <TableColumn fx:id="colReturn"      text="Возврат" maxWidth="80"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+
+                    <HBox alignment="CENTER_RIGHT">
+                        <Button text="Оформить возврат" styleClass="btn-danger"
+                                onAction="#handleProcessReturn"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>

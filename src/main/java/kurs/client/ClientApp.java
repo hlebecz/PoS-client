@@ -4,19 +4,21 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 import kurs.client.session.Session;
-import kurs.client.ui.login.LoginWindow;
+import kurs.client.ui.LoginWindow;
 
 public class ClientApp extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    primaryStage.hide();
-    new LoginWindow().show();
+    new LoginWindow().show(primaryStage);
   }
 
   @Override
   public void stop() {
-    Session.getInstance().close();
+    Session session = Session.getInstance();
+    if (session.isOpen()) {
+      session.close();
+    }
   }
 
   public static void main(String[] args) {

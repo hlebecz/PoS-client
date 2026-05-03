@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="kurs.client.ui.StoreController"
+      spacing="16" fillWidth="true">
+
+    <Label text="Магазины" styleClass="page-title"/>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <!-- Список -->
+        <Tab text="Список">
+            <VBox spacing="10">
+                <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
+
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Button text="Обновить"       styleClass="btn-primary"   onAction="#handleLoad"/>
+                    <Button text="Деактивировать" styleClass="btn-danger"    onAction="#handleDeactivate"/>
+                    <Button text="Активировать"   styleClass="btn-success"   onAction="#handleActivate"/>
+                </HBox>
+
+                <TableView fx:id="storeTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colStoreName"    text="Название"/>
+                        <TableColumn fx:id="colStorePhone"   text="Телефон"/>
+                        <TableColumn fx:id="colStoreManager" text="Менеджер"/>
+                        <TableColumn fx:id="colStoreWh"      text="Склад"/>
+                        <TableColumn fx:id="colStoreActive"  text="Активен" maxWidth="80"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <!-- Создать -->
+        <Tab text="Создать">
+            <VBox spacing="14">
+                <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
+
+                <GridPane hgap="12" vgap="10">
+                    <Label text="Название:"    GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="storeNameField"  prefWidth="280"
+                               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Телефон:"     GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextField fx:id="storePhoneField" prefWidth="280"
+                               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Менеджер:"    GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <HBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <TextField fx:id="storeManagerField" prefWidth="220" editable="false"
+                                   promptText="не выбран"/>
+                        <Button text="Выбрать" styleClass="btn-secondary" onAction="#pickManager"/>
+                    </HBox>
+
+                    <Label text="Склад:"       GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <HBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <TextField fx:id="storeWhField" prefWidth="220" editable="false"
+                                   promptText="не выбран"/>
+                        <Button text="Выбрать" styleClass="btn-secondary" onAction="#pickWarehouse"/>
+                    </HBox>
+                </GridPane>
+
+                <Button text="Создать магазин" styleClass="btn-success" onAction="#handleCreate"/>
+                <Label fx:id="storeFormError" styleClass="error-label"/>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>

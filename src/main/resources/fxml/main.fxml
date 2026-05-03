@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="kurs.client.ui.MainController"
+            stylesheets="@../css/app.css"
+            minWidth="1000" minHeight="620">
+
+    <!-- Sidebar -->
+    <left>
+        <VBox styleClass="sidebar">
+
+            <!-- Header -->
+            <VBox styleClass="sidebar-header" spacing="4">
+                <Label text="⚡ Point of Sale" styleClass="sidebar-title"/>
+                <Label fx:id="userLabel" styleClass="sidebar-user"/>
+            </VBox>
+
+            <!-- Nav items -->
+            <Button fx:id="navSales"      text="🛒  Продажи"      styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+            <Button fx:id="navStock"      text="📦  Остатки"       styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+            <Button fx:id="navEmployees"  text="👥  Сотрудники"    styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+            <Button fx:id="navStores"     text="🏪  Магазины"      styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+            <Button fx:id="navWarehouses" text="🏭  Склады"         styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+            <Button fx:id="navReports"    text="📊  Отчёты"         styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+            <Button fx:id="navUsers"      text="👤  Пользователи"  styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Footer -->
+            <VBox styleClass="sidebar-footer">
+                <Button text="Выйти" styleClass="btn-danger" maxWidth="Infinity" onAction="#handleLogout"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Content — меняется при навигации -->
+    <center>
+        <StackPane fx:id="contentPane" styleClass="content-area"/>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="kurs.client.ui.UserController"
+      spacing="16" fillWidth="true">
+
+    <Label text="Пользователи" styleClass="page-title"/>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <Tab text="Список">
+            <VBox spacing="10">
+                <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Button text="Обновить"       styleClass="btn-primary" onAction="#handleLoad"/>
+                    <Button text="Деактивировать" styleClass="btn-danger"  onAction="#handleDeactivate"/>
+                    <Button text="Активировать"   styleClass="btn-success" onAction="#handleActivate"/>
+                </HBox>
+                <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colLogin"     text="Логин"/>
+                        <TableColumn fx:id="colRole"      text="Роль"/>
+                        <TableColumn fx:id="colActive"    text="Активен" maxWidth="80"/>
+                        <TableColumn fx:id="colCreatedAt" text="Создан"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </Tab>
+        <Tab text="Создать">
+            <VBox spacing="14">
+                <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
+                <GridPane hgap="12" vgap="10">
+                    <Label text="Логин:"  GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField    fx:id="userLoginField" prefWidth="260"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <Label text="Пароль:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <PasswordField fx:id="userPassField" prefWidth="260"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <Label text="Роль:"   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <ComboBox fx:id="userRoleBox" prefWidth="260"
+                              GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+                <Button text="Создать" styleClass="btn-success" onAction="#handleCreate"/>
+                <Label fx:id="userFormError" styleClass="error-label"/>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>

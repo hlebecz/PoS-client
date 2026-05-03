@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("application")
     id("org.openjfx.javafxplugin") version "0.1.0"
+    id("org.beryx.jlink") version "4.0.0"
     checkstyle
     id("com.diffplug.spotless") version "8.4.0"
 }
@@ -78,4 +79,23 @@ tasks.withType<JavaCompile> {
 
 tasks.build {
     dependsOn(tasks.named("spotlessApply"))
+}
+
+jlink {
+
+    options.set(listOf(
+        "--strip-debug",
+        "--no-header-files",
+        "--no-man-pages"
+    ))
+
+    launcher {
+        name = "PoS-Client"
+        jvmArgs = listOf(
+            "--enable-native-access=javafx.graphics"
+        )
+        if (org.gradle.internal.os.OperatingSystem.current().isWindows) {
+            noConsole = true
+        }
+    }
 }

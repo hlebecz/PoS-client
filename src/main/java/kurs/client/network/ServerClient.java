@@ -1,6 +1,7 @@
 package kurs.client.network;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import com.google.gson.Gson;
@@ -39,6 +40,18 @@ public class ServerClient {
     }
   }
 
+  private Response doSend(Request request) throws IOException {
+    out.println(GSON.toJson(request));
+    String line = in.readLine();
+    if (line == null) throw new IOException("Соединение закрыто сервером");
+    Response response = GSON.fromJson(line, Response.class);
+    if (!response.isSuccess())
+      throw new ServerException(
+          response.getMessage() != null ? response.getMessage() : "Ошибка сервера",
+          response.getErrorCode());
+    return response;
+  }
+
   public void connect() throws IOException {
     socket = new Socket(host, port);
     socket.setSoTimeout(10000);
@@ -52,18 +65,6 @@ public class ServerClient {
 
   public boolean isConnected() {
     return socket != null && socket.isConnected() && !socket.isClosed();
-  }
-
-  private Response doSend(Request request) throws IOException {
-    out.println(GSON.toJson(request));
-    String line = in.readLine();
-    if (line == null) throw new IOException("Соединение закрыто сервером");
-    Response response = GSON.fromJson(line, Response.class);
-    if (!response.isSuccess())
-      throw new ServerException(
-          response.getMessage() != null ? response.getMessage() : "Ошибка сервера",
-          response.getErrorCode());
-    return response;
   }
 
   private void ensureConnected() throws IOException {

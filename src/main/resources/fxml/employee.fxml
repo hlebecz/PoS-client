@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="kurs.client.ui.EmployeeController"
+      spacing="16" fillWidth="true">
+
+    <Label text="Сотрудники" styleClass="page-title"/>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <Tab text="Список">
+            <VBox spacing="10">
+                <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Button text="Обновить" styleClass="btn-primary" onAction="#handleLoad"/>
+                    <Button text="Уволить"  styleClass="btn-danger"  onAction="#handleFire"/>
+                </HBox>
+                <TableView fx:id="empTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colEmpName"  text="ФИО"/>
+                        <TableColumn fx:id="colEmpPos"   text="Должность"/>
+                        <TableColumn fx:id="colEmpStore" text="Магазин"/>
+                        <TableColumn fx:id="colEmpRate"  text="Ставка"/>
+                        <TableColumn fx:id="colEmpHired" text="Принят"/>
+                        <TableColumn fx:id="colEmpFired" text="Уволен"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <Tab text="Добавить">
+            <VBox spacing="14">
+                <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
+                <GridPane hgap="12" vgap="10">
+                    <Label text="Магазин:"     GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <HBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <TextField fx:id="empStoreField" prefWidth="220" editable="false" promptText="не выбран"/>
+                        <Button text="Выбрать" styleClass="btn-secondary" onAction="#pickStore"/>
+                    </HBox>
+
+                    <Label text="Учётная запись:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <HBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <TextField fx:id="empUserField" prefWidth="220" editable="false" promptText="опционально"/>
+                        <Button text="Выбрать" styleClass="btn-secondary" onAction="#pickUser"/>
+                    </HBox>
+
+                    <Label text="ФИО:"         GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="empName"     prefWidth="280" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label text="Должность:"   GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <TextField fx:id="empPosition" prefWidth="280" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                    <Label text="Ставка/час:"  GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <TextField fx:id="empRate"     prefWidth="280" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                    <Label text="Телефон:"     GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                    <TextField fx:id="empPhone"    prefWidth="280" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+                    <Label text="Email:"       GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                    <TextField fx:id="empEmail"    prefWidth="280" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+                    <Label text="Дата найма:"  GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                    <DatePicker fx:id="empHiredAt" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                </GridPane>
+                <Button text="Создать сотрудника" styleClass="btn-success" onAction="#handleCreate"/>
+                <Label fx:id="empFormError" styleClass="error-label"/>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>

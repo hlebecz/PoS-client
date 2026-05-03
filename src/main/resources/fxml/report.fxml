@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="kurs.client.ui.ReportController"
+            stylesheets="@../css/app.css">
+    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+
+            <!-- Продажи -->
+            <Tab text="Продажи">
+                <VBox spacing="12">
+                    <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                    <Label text="Отчёт о продажах" styleClass="section-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="С:"/>
+                        <DatePicker fx:id="salesFromPicker" promptText="От"/>
+                        <Label text="По:"/>
+                        <DatePicker fx:id="salesToPicker"   promptText="До"/>
+                        <Button text="Сформировать" styleClass="btn-primary"
+                                onAction="#handleSalesReport"/>
+                    </HBox>
+                    <TableView fx:id="salesTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colSalesStore"   text="Магазин"/>
+                            <TableColumn fx:id="colSalesCount"   text="Продаж"/>
+                            <TableColumn fx:id="colReturnsCount" text="Возвратов"/>
+                            <TableColumn fx:id="colGross"        text="Выручка (брутто)"/>
+                            <TableColumn fx:id="colNet"          text="Выручка (нетто)"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- Эффективность сотрудников -->
+            <Tab text="Сотрудники">
+                <VBox spacing="12">
+                    <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                    <Label text="Эффективность сотрудников" styleClass="section-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="С:"/>
+                        <DatePicker fx:id="empFromPicker" promptText="От"/>
+                        <Label text="По:"/>
+                        <DatePicker fx:id="empToPicker"   promptText="До"/>
+                        <Button text="Сформировать" styleClass="btn-primary"
+                                onAction="#handleEmpReport"/>
+                    </HBox>
+                    <TableView fx:id="empTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colEmpName"   text="Сотрудник"/>
+                            <TableColumn fx:id="colEmpPos"    text="Должность"/>
+                            <TableColumn fx:id="colHours"     text="Часов"/>
+                            <TableColumn fx:id="colDays"      text="Дней"/>
+                            <TableColumn fx:id="colLabor"     text="Затраты"/>
+                            <TableColumn fx:id="colSalesCnt"  text="Продаж"/>
+                            <TableColumn fx:id="colRevenue"   text="Выручка"/>
+                            <TableColumn fx:id="colKpi"       text="KPI"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- Эффективность по точкам -->
+            <Tab text="По точкам">
+                <VBox spacing="12">
+                    <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                    <Label text="Эффективность по точкам" styleClass="section-title"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="С:"/>
+                        <DatePicker fx:id="storeFromPicker" promptText="От"/>
+                        <Label text="По:"/>
+                        <DatePicker fx:id="storeToPicker"   promptText="До"/>
+                        <Button text="Сформировать" styleClass="btn-primary"
+                                onAction="#handleStoreReport"/>
+                    </HBox>
+                    <TableView fx:id="storeReportTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colRptStore"  text="Магазин"/>
+                            <TableColumn fx:id="colRptNet"    text="Выручка"/>
+                            <TableColumn fx:id="colRptSales"  text="Продаж"/>
+                            <TableColumn fx:id="colRptLabor"  text="Затраты труда"/>
+                            <TableColumn fx:id="colRptHours"  text="Часов"/>
+                            <TableColumn fx:id="colRptRph"    text="Выручка/час"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>

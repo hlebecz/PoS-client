@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="kurs.client.ui.LoginController"
+           styleClass="login-root"
+           stylesheets="@../css/app.css">
+
+    <VBox styleClass="login-card" maxWidth="340" alignment="CENTER" spacing="14">
+        <padding><Insets top="40" right="48" bottom="40" left="48"/></padding>
+
+        <Label text="Point of Sale" styleClass="login-title"/>
+        <Label text="Система управления торговлей" styleClass="login-subtitle"/>
+
+        <Separator/>
+
+        <Label text="Подключение:"/>
+        <GridPane hgap="8" vgap="6">
+            <Label text="Хост:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="hostField" text="localhost"
+                       GridPane.columnIndex="1" GridPane.rowIndex="0"
+                       maxWidth="Infinity"/>
+            <Label text="Порт:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="portField" text="8080"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"
+                       maxWidth="Infinity"/>
+            <columnConstraints>
+                <ColumnConstraints minWidth="50"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+        </GridPane>
+
+        <Separator/>
+
+        <Label text="Учётные данные:"/>
+        <TextField fx:id="loginField" promptText="Логин" maxWidth="Infinity"/>
+        <PasswordField fx:id="passField" promptText="Пароль" maxWidth="Infinity"/>
+
+        <Label fx:id="errorLabel" styleClass="error-label" wrapText="true"
+               alignment="CENTER" maxWidth="Infinity"/>
+
+        <Button fx:id="loginBtn" text="Войти" styleClass="btn-primary"
+                maxWidth="Infinity" defaultButton="true"
+                onAction="#handleLogin"/>
+
+        <ProgressIndicator fx:id="spinner" visible="false"
+                           maxWidth="28" maxHeight="28"/>
+    </VBox>
+</StackPane>

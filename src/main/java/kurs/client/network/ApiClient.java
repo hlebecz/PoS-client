@@ -50,7 +50,6 @@ public class ApiClient {
     sendAuth(RequestType.LOGOUT, null);
   }
 
-
   public List<UserResponse> getUsers() {
     return parseList(sendAuth(RequestType.GET_USERS, null), UserResponse.class);
   }
@@ -71,6 +70,9 @@ public class ApiClient {
     return parse(sendAuth(RequestType.DEACTIVATE_USER, GSON.toJson(id)), UserResponse.class);
   }
 
+  public UserResponse activateUser(UUID id) {
+    return parse(sendAuth(RequestType.ACTIVATE_USER, GSON.toJson(id)), UserResponse.class);
+  }
 
   public List<EmployeeResponse> getEmployees() {
     return parseList(sendAuth(RequestType.GET_EMPLOYEES, null), EmployeeResponse.class);
@@ -93,10 +95,9 @@ public class ApiClient {
     sendAuth(RequestType.DELETE_EMPLOYEE, GSON.toJson(id));
   }
 
-  //  public EmployeeResponse fireEmployee(FireEmployeeRequest req) {
-  //    return parse(sendAuth(RequestType.FIRE_EMPLOYEE, GSON.toJson(req)), EmployeeResponse.class);
-  //  }
-
+  public EmployeeResponse fireEmployee(FireEmployeeRequest req) {
+    return parse(sendAuth(RequestType.FIRE_EMPLOYEE, GSON.toJson(req)), EmployeeResponse.class);
+  }
 
   public List<StoreResponse> getStores() {
     return parseList(sendAuth(RequestType.GET_STORES, null), StoreResponse.class);
@@ -122,6 +123,9 @@ public class ApiClient {
     return parse(sendAuth(RequestType.DEACTIVATE_STORE, GSON.toJson(id)), StoreResponse.class);
   }
 
+  public StoreResponse activateStore(UUID id) {
+    return parse(sendAuth(RequestType.ACTIVATE_STORE, GSON.toJson(id)), StoreResponse.class);
+  }
 
   public List<WarehouseResponse> getWarehouses() {
     return parseList(sendAuth(RequestType.GET_WAREHOUSES, null), WarehouseResponse.class);
@@ -139,7 +143,6 @@ public class ApiClient {
     sendAuth(RequestType.DELETE_WAREHOUSE, GSON.toJson(id));
   }
 
-
   public List<StockResponse> getAllStock() {
     return parseList(sendAuth(RequestType.GET_STOCK, null), StockResponse.class);
   }
@@ -153,6 +156,15 @@ public class ApiClient {
     return parse(sendAuth(RequestType.SET_STOCK, GSON.toJson(req)), StockResponse.class);
   }
 
+  public WarehouseResponse deactivateWarehouse(UUID id) {
+    return parse(
+        sendAuth(RequestType.DEACTIVATE_WAREHOUSE, GSON.toJson(id)), WarehouseResponse.class);
+  }
+
+  public WarehouseResponse activateWarehouse(UUID id) {
+    return parse(
+        sendAuth(RequestType.ACTIVATE_WAREHOUSE, GSON.toJson(id)), WarehouseResponse.class);
+  }
 
   public List<SaleResponse> getSalesByStore(UUID storeId) {
     return parseList(
@@ -168,13 +180,11 @@ public class ApiClient {
         sendAuth(RequestType.PROCESS_RETURN, GSON.toJson(originalSaleId)), SaleResponse.class);
   }
 
-
   public List<TimesheetResponse> getAllTimesheetsByPeriod(ReportRequest req) {
     return parseList(
         sendAuth(RequestType.GET_ALL_TIMESHEETS_BY_PERIOD, GSON.toJson(req)),
         TimesheetResponse.class);
   }
-
 
   public List<SalesReportEntry> reportSales(ReportRequest req) {
     return parseList(sendAuth(RequestType.REPORT_SALES, GSON.toJson(req)), SalesReportEntry.class);
@@ -190,7 +200,6 @@ public class ApiClient {
         sendAuth(RequestType.REPORT_STORE_EFFICIENCY, GSON.toJson(req)),
         StoreEfficiencyReport.class);
   }
-
 
   private Response sendAuth(RequestType type, String payload) {
     return session.getClient().send(new Request(type, session.getToken(), payload));
