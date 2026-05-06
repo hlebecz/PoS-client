@@ -20,6 +20,7 @@ public class EmployeeController extends BaseController {
   @FXML private TableColumn<EmpRow, String> colEmpName;
   @FXML private TableColumn<EmpRow, String> colEmpPos;
   @FXML private TableColumn<EmpRow, String> colEmpStore;
+  @FXML private TableColumn<EmpRow, String> colEmpUser;
   @FXML private TableColumn<EmpRow, String> colEmpRate;
   @FXML private TableColumn<EmpRow, String> colEmpHired;
   @FXML private TableColumn<EmpRow, String> colEmpFired;
@@ -44,6 +45,7 @@ public class EmployeeController extends BaseController {
     colEmpName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
     colEmpPos.setCellValueFactory(new PropertyValueFactory<>("position"));
     colEmpStore.setCellValueFactory(new PropertyValueFactory<>("storeName"));
+    colEmpUser.setCellValueFactory(new PropertyValueFactory<>("userLogin"));
     colEmpRate.setCellValueFactory(new PropertyValueFactory<>("hourlyRate"));
     colEmpHired.setCellValueFactory(new PropertyValueFactory<>("hiredAt"));
     colEmpFired.setCellValueFactory(new PropertyValueFactory<>("firedAt"));
@@ -187,7 +189,7 @@ public class EmployeeController extends BaseController {
   }
 
   public static class EmpRow {
-    private final String id, fullName, position, storeName, hourlyRate, hiredAt, firedAt;
+    private final String id, fullName, position, storeName, userLogin, hourlyRate, hiredAt, firedAt;
 
     public static EmpRow from(EmployeeResponse e) {
       return new EmpRow(
@@ -195,16 +197,19 @@ public class EmployeeController extends BaseController {
           str(e.getFullName()),
           str(e.getPosition()),
           str(e.getStoreName()),
+          e.getUserLogin() != null ? e.getUserLogin() : "—",
           str(e.getHourlyRate()),
           str(e.getHiredAt()),
           e.getFiredAt() != null ? e.getFiredAt().toString() : "—");
     }
 
-    public EmpRow(String id, String fn, String pos, String sn, String hr, String ha, String fa) {
+    public EmpRow(
+        String id, String fn, String pos, String sn, String ul, String hr, String ha, String fa) {
       this.id = id;
       fullName = fn;
       position = pos;
       storeName = sn;
+      userLogin = ul;
       hourlyRate = hr;
       hiredAt = ha;
       firedAt = fa;
@@ -224,6 +229,10 @@ public class EmployeeController extends BaseController {
 
     public String getStoreName() {
       return storeName;
+    }
+
+    public String getUserLogin() {
+      return userLogin;
     }
 
     public String getHourlyRate() {

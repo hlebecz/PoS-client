@@ -14,15 +14,17 @@
         <Tab text="Список">
             <VBox spacing="10">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
-                <HBox spacing="8" alignment="CENTER_LEFT">
-                    <Button text="Обновить"       styleClass="btn-primary" onAction="#handleLoad"/>
-                    <Button text="Деактивировать" styleClass="btn-danger"  onAction="#handleDeactivate"/>
-                    <Button text="Активировать"   styleClass="btn-success" onAction="#handleActivate"/>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-toolbar">
+                    <Button text="Обновить" styleClass="btn-primary" onAction="#handleLoad"/>
+                    <Separator orientation="VERTICAL"/>
+                    <Button text="Деактивировать" styleClass="btn-danger" onAction="#handleDeactivate"/>
+                    <Button text="Активировать" styleClass="btn-success" onAction="#handleActivate"/>
                 </HBox>
                 <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colLogin"     text="Логин"/>
                         <TableColumn fx:id="colRole"      text="Роль"/>
+                        <TableColumn fx:id="colEmployee"  text="Сотрудник"/>
                         <TableColumn fx:id="colActive"    text="Активен" maxWidth="80"/>
                         <TableColumn fx:id="colCreatedAt" text="Создан"/>
                     </columns>

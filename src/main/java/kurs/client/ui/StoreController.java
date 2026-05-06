@@ -2,12 +2,14 @@ package kurs.client.ui;
 
 import java.util.List;
 import java.util.UUID;
+import javafx.application.Platform;
 import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import kurs.client.domain.dto.request.CreateStoreRequest;
+import kurs.client.domain.dto.request.UpdateStoreRequest;
 import kurs.client.domain.dto.response.*;
 import kurs.client.ui.component.BaseController;
 import kurs.client.ui.component.EntityPickerDialog;
@@ -21,14 +23,24 @@ public class StoreController extends BaseController {
   @FXML private TableColumn<StoreRow, String> colStoreWh;
   @FXML private TableColumn<StoreRow, String> colStoreActive;
 
+  @FXML private TabPane tabPane;
   @FXML private TextField storeNameField;
   @FXML private TextField storePhoneField;
-  @FXML private TextField storeManagerField; // отображает login менеджера
-  @FXML private TextField storeWhField; // отображает название склада
+  @FXML private TextField storeManagerField;
+  @FXML private TextField storeWhField;
   @FXML private Label storeFormError;
+
+  @FXML private TextField updateIdField;
+  @FXML private TextField updateNameField;
+  @FXML private TextField updatePhoneField;
+  @FXML private TextField updateManagerField;
+  @FXML private TextField updateWhField;
+  @FXML private Label updateFormError;
 
   private UUID selectedManagerId = null;
   private UUID selectedWarehouseId = null;
+  private UUID updateManagerId = null;
+  private UUID updateWarehouseId = null;
 
   private final ObservableList<StoreRow> items = FXCollections.observableArrayList();
 
@@ -39,19 +51,31 @@ public class StoreController extends BaseController {
     colStoreManager.setCellValueFactory(new PropertyValueFactory<>("managerLogin"));
     colStoreWh.setCellValueFactory(new PropertyValueFactory<>("warehouseName"));
     colStoreActive.setCellValueFactory(new PropertyValueFactory<>("active"));
+
     storeTable.setItems(items);
     handleLoad();
   }
 
-  // ── List ─────────────────────────────────────────────────────────────────
+  private void populateUpdateForm(StoreRow row) {
+    updateIdField.setText(row.getId());
+    updateNameField.setText(row.getName());
+    updatePhoneField.setText(row.getPhone());
+    updateManagerField.setText(row.getManagerLogin());
+    updateWhField.setText(row.getWarehouseName());
+    updateManagerId = row.getManagerId() != null ? UUID.fromString(row.getManagerId()) : null;
+    updateWarehouseId = row.getWarehouseId() != null ? UUID.fromString(row.getWarehouseId()) : null;
+
+    if (tabPane != null) {
+      tabPane.getSelectionModel().select(2);
+    }
+  }
 
   @FXML
   private void handleLoad() {
     async(
         () -> {
           List<StoreResponse> data = api.getStores();
-          javafx.application.Platform.runLater(
-              () -> items.setAll(data.stream().map(StoreRow::from).toList()));
+          Platform.runLater(() -> items.setAll(data.stream().map(StoreRow::from).toList()));
         },
         null);
   }
@@ -86,15 +110,12 @@ public class StoreController extends BaseController {
         });
   }
 
-  // ── Create ────────────────────────────────────────────────────────────────
-
-  /** Открывает диалог выбора менеджера (из списка пользователей с ролью MANAGER). */
   @FXML
   private void pickManager() {
     async(
         () -> {
           List<UserResponse> users = api.getUsers();
-          javafx.application.Platform.runLater(
+          Platform.runLater(
               () -> {
                 EntityPickerDialog<UserResponse> picker =
                     new EntityPickerDialog<>(
@@ -118,13 +139,12 @@ public class StoreController extends BaseController {
         null);
   }
 
-  /** Открывает диалог выбора склада. */
   @FXML
   private void pickWarehouse() {
     async(
         () -> {
           List<WarehouseResponse> warehouses = api.getWarehouses();
-          javafx.application.Platform.runLater(
+          Platform.runLater(
               () -> {
                 EntityPickerDialog<WarehouseResponse> picker =
                     new EntityPickerDialog<>(
@@ -158,7 +178,12 @@ public class StoreController extends BaseController {
       return;
     }
     CreateStoreRequest req =
-        new CreateStoreRequest(name, phone, selectedManagerId, selectedWarehouseId, null);
+        CreateStoreRequest.builder()
+            .name(name)
+            .phone(phone)
+            .managerId(selectedManagerId)
+            .warehouseId(selectedWarehouseId)
+            .build();
     async(
         () -> api.createStore(req),
         () -> {
@@ -174,28 +199,145 @@ public class StoreController extends BaseController {
         msg -> setError(storeFormError, msg));
   }
 
-  // ── Row model ─────────────────────────────────────────────────────────────
+  @FXML
+  private void pickUpdateManager() {
+    async(
+        () -> {
+          List<UserResponse> users = api.getUsers();
+          Platform.runLater(
+              () -> {
+                EntityPickerDialog<UserResponse> picker =
+                    new EntityPickerDialog<>(
+                        getStage(updateNameField),
+                        "Выберите менеджера",
+                        List.of(
+                            new EntityPickerDialog.Col<>("Логин", "login"),
+                            new EntityPickerDialog.Col<>("Роль", "role")),
+                        users,
+                        u -> UUID.fromString(u.getId().toString()));
+                UUID id = picker.showAndWait();
+                if (id != null) {
+                  updateManagerId = id;
+                  users.stream()
+                      .filter(u -> u.getId().equals(id))
+                      .findFirst()
+                      .ifPresent(u -> updateManagerField.setText(u.getLogin()));
+                }
+              });
+        },
+        null);
+  }
+
+  @FXML
+  private void pickUpdateWarehouse() {
+    async(
+        () -> {
+          List<WarehouseResponse> warehouses = api.getWarehouses();
+          Platform.runLater(
+              () -> {
+                EntityPickerDialog<WarehouseResponse> picker =
+                    new EntityPickerDialog<>(
+                        getStage(updateNameField),
+                        "Выберите склад",
+                        List.of(
+                            new EntityPickerDialog.Col<>("Название", "name"),
+                            new EntityPickerDialog.Col<>("Телефон", "phone")),
+                        warehouses,
+                        w -> UUID.fromString(w.getId().toString()));
+                UUID id = picker.showAndWait();
+                if (id != null) {
+                  updateWarehouseId = id;
+                  warehouses.stream()
+                      .filter(w -> w.getId().equals(id))
+                      .findFirst()
+                      .ifPresent(w -> updateWhField.setText(w.getName()));
+                }
+              });
+        },
+        null);
+  }
+
+  @FXML
+  private void handleUpdate() {
+    setError(updateFormError, "");
+    String idStr = updateIdField.getText().trim();
+    if (idStr.isEmpty()) {
+      setError(updateFormError, "Выберите магазин из списка");
+      return;
+    }
+
+    UUID id = UUID.fromString(idStr);
+    String name = updateNameField.getText().trim();
+    String phone = updatePhoneField.getText().trim();
+
+    UpdateStoreRequest req =
+        UpdateStoreRequest.builder()
+            .id(id)
+            .name(name.isEmpty() ? null : name)
+            .phone(phone.isEmpty() ? null : phone)
+            .managerId(updateManagerId)
+            .warehouseId(updateWarehouseId)
+            .build();
+
+    async(
+        () -> api.updateStore(req),
+        () -> {
+          showSuccess("Магазин обновлен");
+          updateIdField.clear();
+          updateNameField.clear();
+          updatePhoneField.clear();
+          updateManagerField.clear();
+          updateWhField.clear();
+          updateManagerId = null;
+          updateWarehouseId = null;
+          handleLoad();
+        },
+        msg -> setError(updateFormError, msg));
+  }
+
+  @FXML
+  private void handleEdit() {
+    StoreRow sel = storeTable.getSelectionModel().getSelectedItem();
+    if (sel == null) {
+      showError("Выберите магазин из списка");
+      return;
+    }
+    populateUpdateForm(sel);
+  }
 
   public static class StoreRow {
     private final String id, name, phone, managerLogin, warehouseName, active;
+    private final String managerId, warehouseId;
 
     public static StoreRow from(StoreResponse s) {
       return new StoreRow(
           str(s.getId()),
           str(s.getName()),
           str(s.getPhone()),
-          s.getManagerLogin() != null ? s.getManagerLogin() : "—",
-          s.getWarehouseName() != null ? s.getWarehouseName() : "—",
-          s.isActive() ? "Да" : "Нет");
+          str(s.getManagerLogin()),
+          str(s.getWarehouseName()),
+          s.isActive() ? "Да" : "Нет",
+          s.getManagerId() != null ? s.getManagerId().toString() : null,
+          s.getWarehouseId() != null ? s.getWarehouseId().toString() : null);
     }
 
-    public StoreRow(String id, String n, String ph, String ml, String wn, String a) {
+    public StoreRow(
+        String id,
+        String name,
+        String phone,
+        String managerLogin,
+        String warehouseName,
+        String active,
+        String managerId,
+        String warehouseId) {
       this.id = id;
-      name = n;
-      phone = ph;
-      managerLogin = ml;
-      warehouseName = wn;
-      active = a;
+      this.name = name;
+      this.phone = phone;
+      this.managerLogin = managerLogin;
+      this.warehouseName = warehouseName;
+      this.active = active;
+      this.managerId = managerId;
+      this.warehouseId = warehouseId;
     }
 
     public String getId() {
@@ -220,6 +362,14 @@ public class StoreController extends BaseController {
 
     public String getActive() {
       return active;
+    }
+
+    public String getManagerId() {
+      return managerId;
+    }
+
+    public String getWarehouseId() {
+      return warehouseId;
     }
   }
 }

@@ -1,5 +1,6 @@
 package kurs.client.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javafx.collections.*;
@@ -8,12 +9,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import kurs.client.domain.dto.request.SetStockRequest;
+import kurs.client.domain.dto.response.ProductResponse;
 import kurs.client.domain.dto.response.StockResponse;
+import kurs.client.domain.dto.response.StoreResponse;
+import kurs.client.domain.dto.response.WarehouseResponse;
 import kurs.client.ui.component.BaseController;
+import kurs.client.ui.component.EntityPickerDialog;
 
 public class StockController extends BaseController {
 
-  @FXML private TextField locationField;
+  @FXML private TextField filterLocationField;
   @FXML private TextField setLocField;
   @FXML private TextField setProductField;
   @FXML private TextField setQtyField;
@@ -28,6 +33,10 @@ public class StockController extends BaseController {
 
   private final ObservableList<StockRow> items = FXCollections.observableArrayList();
 
+  private UUID filterLocationId = null;
+  private UUID setLocationId = null;
+  private UUID setProductId = null;
+
   @FXML
   public void initialize() {
     colLocName.setCellValueFactory(new PropertyValueFactory<>("locationName"));
@@ -37,6 +46,7 @@ public class StockController extends BaseController {
     colQty.setCellValueFactory(new PropertyValueFactory<>("quantity"));
     colUpdated.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
     stockTable.setItems(items);
+    handleLoadAll();
   }
 
   @FXML
@@ -51,15 +61,57 @@ public class StockController extends BaseController {
   }
 
   @FXML
-  private void handleLoadByLocation() {
-    String sid = locationField.getText().trim();
-    if (sid.isEmpty()) {
-      showError("Укажите ID хранилища");
+  private void handlePickFilterLocation() {
+    async(
+        () -> {
+          List<StoreResponse> stores = api.getStores();
+          List<WarehouseResponse> warehouses = api.getWarehouses();
+          List<StorageLocationItem> locations = new ArrayList<>();
+          stores.forEach(
+              s -> locations.add(new StorageLocationItem(s.getId(), s.getName(), "Магазин")));
+          warehouses.forEach(
+              w -> locations.add(new StorageLocationItem(w.getId(), w.getName(), "Склад")));
+
+          javafx.application.Platform.runLater(
+              () -> {
+                EntityPickerDialog<StorageLocationItem> picker =
+                    new EntityPickerDialog<>(
+                        getStage(filterLocationField),
+                        "Выберите хранилище",
+                        List.of(
+                            new EntityPickerDialog.Col<>("Название", "name"),
+                            new EntityPickerDialog.Col<>("Тип", "type")),
+                        locations,
+                        StorageLocationItem::id);
+                UUID selectedId = picker.showAndWait();
+                if (selectedId != null) {
+                  filterLocationId = selectedId;
+                  locations.stream()
+                      .filter(loc -> loc.id().equals(selectedId))
+                      .findFirst()
+                      .ifPresent(loc -> filterLocationField.setText(loc.name()));
+                  loadFilteredStock();
+                }
+              });
+        },
+        null);
+  }
+
+  @FXML
+  private void handleClearFilter() {
+    filterLocationId = null;
+    filterLocationField.clear();
+    handleLoadAll();
+  }
+
+  private void loadFilteredStock() {
+    if (filterLocationId == null) {
+      handleLoadAll();
       return;
     }
     async(
         () -> {
-          List<StockResponse> data = api.getStockByLocation(UUID.fromString(sid));
+          List<StockResponse> data = api.getStockByLocation(filterLocationId);
           javafx.application.Platform.runLater(
               () -> items.setAll(data.stream().map(StockRow::from).toList()));
         },
@@ -67,29 +119,106 @@ public class StockController extends BaseController {
   }
 
   @FXML
+  private void handlePickLocation() {
+    async(
+        () -> {
+          List<StoreResponse> stores = api.getStores();
+          List<WarehouseResponse> warehouses = api.getWarehouses();
+          List<StorageLocationItem> locations = new ArrayList<>();
+          stores.forEach(
+              s -> locations.add(new StorageLocationItem(s.getId(), s.getName(), "Магазин")));
+          warehouses.forEach(
+              w -> locations.add(new StorageLocationItem(w.getId(), w.getName(), "Склад")));
+
+          javafx.application.Platform.runLater(
+              () -> {
+                EntityPickerDialog<StorageLocationItem> picker =
+                    new EntityPickerDialog<>(
+                        getStage(setLocField),
+                        "Выберите хранилище",
+                        List.of(
+                            new EntityPickerDialog.Col<>("Название", "name"),
+                            new EntityPickerDialog.Col<>("Тип", "type")),
+                        locations,
+                        StorageLocationItem::id);
+                UUID selectedId = picker.showAndWait();
+                if (selectedId != null) {
+                  setLocationId = selectedId;
+                  locations.stream()
+                      .filter(loc -> loc.id().equals(selectedId))
+                      .findFirst()
+                      .ifPresent(loc -> setLocField.setText(loc.name()));
+                }
+              });
+        },
+        null);
+  }
+
+  @FXML
+  private void handlePickProduct() {
+    async(
+        () -> {
+          List<ProductResponse> products = api.getProducts();
+          javafx.application.Platform.runLater(
+              () -> {
+                EntityPickerDialog<ProductResponse> picker =
+                    new EntityPickerDialog<>(
+                        getStage(setProductField),
+                        "Выберите товар",
+                        List.of(
+                            new EntityPickerDialog.Col<>("Название", "name"),
+                            new EntityPickerDialog.Col<>("Артикул", "article"),
+                            new EntityPickerDialog.Col<>("Цена", "price")),
+                        products,
+                        ProductResponse::getId);
+                UUID selectedId = picker.showAndWait();
+                if (selectedId != null) {
+                  setProductId = selectedId;
+                  products.stream()
+                      .filter(p -> p.getId().equals(selectedId))
+                      .findFirst()
+                      .ifPresent(
+                          p -> setProductField.setText(p.getName() + " (" + p.getArticle() + ")"));
+                }
+              });
+        },
+        null);
+  }
+
+  @FXML
   private void handleSetStock() {
-    String locId = setLocField.getText().trim();
-    String prodId = setProductField.getText().trim();
+    if (setLocationId == null || setProductId == null) {
+      setError(stockStatusLabel, "Выберите хранилище и товар");
+      return;
+    }
     String qtyS = setQtyField.getText().trim();
-    if (locId.isEmpty() || prodId.isEmpty() || qtyS.isEmpty()) {
-      setError(stockStatusLabel, "Заполните все поля");
+    if (qtyS.isEmpty()) {
+      setError(stockStatusLabel, "Укажите количество");
       return;
     }
     try {
       int qty = Integer.parseInt(qtyS);
       async(
-          () ->
-              api.setStock(
-                  new SetStockRequest(UUID.fromString(locId), UUID.fromString(prodId), qty)),
+          () -> api.setStock(new SetStockRequest(setLocationId, setProductId, qty)),
           () -> {
             setError(stockStatusLabel, "");
+            showSuccess("Остаток установлен");
             handleLoadAll();
+            // Clear form
+            setLocationId = null;
+            setProductId = null;
+            setLocField.clear();
+            setProductField.clear();
+            setQtyField.clear();
           },
           msg -> setError(stockStatusLabel, msg));
     } catch (NumberFormatException e) {
       setError(stockStatusLabel, "Некорректное количество");
     }
   }
+
+  // Helper record for combining stores and warehouses
+  public record StorageLocationItem(UUID id, String name, String type) {}
 
   public static class StockRow {
     private final String locationName, productName, article, price, quantity, updatedAt;

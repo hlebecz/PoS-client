@@ -23,6 +23,7 @@ public class ProductController extends BaseController {
   @FXML private TableColumn<ProductRow, String> colPrice;
   @FXML private TableColumn<ProductRow, String> colCreatedAt;
 
+  @FXML private TabPane tabPane;
   @FXML private TextField searchField;
   @FXML private TextField nameField;
   @FXML private TextField articleField;
@@ -43,23 +44,20 @@ public class ProductController extends BaseController {
     colArticle.setCellValueFactory(new PropertyValueFactory<>("article"));
     colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
     colCreatedAt.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
+
     productTable.setItems(items);
-
-    // When a product is selected, populate update form
-    productTable
-        .getSelectionModel()
-        .selectedItemProperty()
-        .addListener(
-            (obs, oldVal, newVal) -> {
-              if (newVal != null) {
-                updateIdField.setText(newVal.getId());
-                updateNameField.setText(newVal.getName());
-                updateArticleField.setText(newVal.getArticle());
-                updatePriceField.setText(newVal.getPrice());
-              }
-            });
-
     handleLoad();
+  }
+
+  private void populateUpdateForm(ProductRow row) {
+    updateIdField.setText(row.getId());
+    updateNameField.setText(row.getName());
+    updateArticleField.setText(row.getArticle());
+    updatePriceField.setText(row.getPrice());
+    // Switch to Update tab (index 2)
+    if (tabPane != null) {
+      tabPane.getSelectionModel().select(2);
+    }
   }
 
   @FXML
@@ -204,6 +202,16 @@ public class ProductController extends BaseController {
           showSuccess("Товар удален");
           handleLoad();
         });
+  }
+
+  @FXML
+  private void handleEdit() {
+    ProductRow sel = productTable.getSelectionModel().getSelectedItem();
+    if (sel == null) {
+      showError("Выберите товар из списка");
+      return;
+    }
+    populateUpdateForm(sel);
   }
 
   public static class ProductRow {

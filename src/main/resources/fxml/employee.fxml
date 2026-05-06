@@ -15,15 +15,17 @@
         <Tab text="Список">
             <VBox spacing="10">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
-                <HBox spacing="8" alignment="CENTER_LEFT">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-toolbar">
                     <Button text="Обновить" styleClass="btn-primary" onAction="#handleLoad"/>
-                    <Button text="Уволить"  styleClass="btn-danger"  onAction="#handleFire"/>
+                    <Separator orientation="VERTICAL"/>
+                    <Button text="Уволить" styleClass="btn-danger" onAction="#handleFire"/>
                 </HBox>
                 <TableView fx:id="empTable" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colEmpName"  text="ФИО"/>
                         <TableColumn fx:id="colEmpPos"   text="Должность"/>
                         <TableColumn fx:id="colEmpStore" text="Магазин"/>
+                        <TableColumn fx:id="colEmpUser"  text="Логин" maxWidth="120"/>
                         <TableColumn fx:id="colEmpRate"  text="Ставка"/>
                         <TableColumn fx:id="colEmpHired" text="Принят"/>
                         <TableColumn fx:id="colEmpFired" text="Уволен"/>

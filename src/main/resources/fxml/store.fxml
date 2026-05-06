@@ -10,17 +10,19 @@
 
     <Label text="Магазины" styleClass="page-title"/>
 
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
         <!-- Список -->
         <Tab text="Список">
             <VBox spacing="10">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
 
-                <HBox spacing="8" alignment="CENTER_LEFT">
-                    <Button text="Обновить"       styleClass="btn-primary"   onAction="#handleLoad"/>
-                    <Button text="Деактивировать" styleClass="btn-danger"    onAction="#handleDeactivate"/>
-                    <Button text="Активировать"   styleClass="btn-success"   onAction="#handleActivate"/>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-toolbar">
+                    <Button text="Обновить" styleClass="btn-primary" onAction="#handleLoad"/>
+                    <Separator orientation="VERTICAL"/>
+                    <Button text="Изменить" styleClass="btn-warning" onAction="#handleEdit"/>
+                    <Button text="Деактивировать" styleClass="btn-danger" onAction="#handleDeactivate"/>
+                    <Button text="Активировать" styleClass="btn-success" onAction="#handleActivate"/>
                 </HBox>
 
                 <TableView fx:id="storeTable" VBox.vgrow="ALWAYS">
@@ -69,6 +71,45 @@
 
                 <Button text="Создать магазин" styleClass="btn-success" onAction="#handleCreate"/>
                 <Label fx:id="storeFormError" styleClass="error-label"/>
+            </VBox>
+        </Tab>
+
+        <!-- Обновить -->
+        <Tab text="Обновить">
+            <VBox spacing="14">
+                <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
+                <Label text="Выберите магазин из списка для обновления" styleClass="info-label"/>
+
+                <GridPane hgap="12" vgap="10">
+                    <Label text="ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="updateIdField" editable="false" prefWidth="280"
+                               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Название:"    GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextField fx:id="updateNameField"  prefWidth="280"
+                               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Телефон:"     GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="updatePhoneField" prefWidth="280"
+                               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label text="Менеджер:"    GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <HBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <TextField fx:id="updateManagerField" prefWidth="220" editable="false"
+                                   promptText="не выбран"/>
+                        <Button text="Выбрать" styleClass="btn-secondary" onAction="#pickUpdateManager"/>
+                    </HBox>
+
+                    <Label text="Склад:"       GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <HBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <TextField fx:id="updateWhField" prefWidth="220" editable="false"
+                                   promptText="не выбран"/>
+                        <Button text="Выбрать" styleClass="btn-secondary" onAction="#pickUpdateWarehouse"/>
+                    </HBox>
+                </GridPane>
+
+                <Button text="Обновить магазин" styleClass="btn-primary" onAction="#handleUpdate"/>
+                <Label fx:id="updateFormError" styleClass="error-label"/>
             </VBox>
         </Tab>
     </TabPane>

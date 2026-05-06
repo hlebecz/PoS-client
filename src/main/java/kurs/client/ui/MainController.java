@@ -40,7 +40,7 @@ public class MainController extends BaseController {
     navMap.put(navReports, "report.fxml");
     navMap.put(navUsers, "user.fxml");
 
-    // Скрываем пункты меню по роли
+
     navUsers.setVisible(session.isAdmin());
     navUsers.setManaged(session.isAdmin());
     navReports.setVisible(session.isAdmin() || session.isAccountant());
@@ -51,7 +51,8 @@ public class MainController extends BaseController {
     navStores.setManaged(session.isAdmin() || session.isManager());
     navWarehouses.setVisible(session.isAdmin() || session.isManager() || session.isAccountant());
     navWarehouses.setManaged(session.isAdmin() || session.isManager() || session.isAccountant());
-    // Products visible to all authenticated users
+
+
     navProducts.setVisible(true);
     navProducts.setManaged(true);
 

@@ -292,7 +292,7 @@ public class SaleController extends BaseController {
                 updateTotal();
                 // Обновляем остатки
                 if (currentStoreId != null) loadStock(currentStoreId);
-                showSuccess("Продажа проведена!\nИтог: " + result.getTotal() + " ₽");
+                showSuccess("Продажа проведена!\nИтог: " + result.getTotal() + " BYN");
               });
         },
         null,
@@ -307,10 +307,9 @@ public class SaleController extends BaseController {
                     new BigDecimal(c.getProductPrice())
                         .multiply(BigDecimal.valueOf(c.getQuantity())))
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    totalLabel.setText(total.setScale(2, java.math.RoundingMode.HALF_UP) + " ₽");
+    totalLabel.setText(total.setScale(2, java.math.RoundingMode.HALF_UP) + " BYN");
   }
 
-  // ── История ──────────────────────────────────────────────────────────────
 
   @FXML
   private void handleLoadHistory() {

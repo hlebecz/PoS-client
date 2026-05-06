@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import kurs.client.domain.dto.request.CreateWarehouseRequest;
+import kurs.client.domain.dto.request.UpdateWarehouseRequest;
 import kurs.client.domain.dto.response.WarehouseResponse;
 import kurs.client.ui.component.BaseController;
 
@@ -17,9 +18,16 @@ public class WarehouseController extends BaseController {
   @FXML private TableColumn<WhRow, String> colWhName;
   @FXML private TableColumn<WhRow, String> colWhPhone;
   @FXML private TableColumn<WhRow, String> colWhActive;
+
+  @FXML private TabPane tabPane;
   @FXML private TextField whNameField;
   @FXML private TextField whPhoneField;
   @FXML private Label whFormError;
+
+  @FXML private TextField updateIdField;
+  @FXML private TextField updateNameField;
+  @FXML private TextField updatePhoneField;
+  @FXML private Label updateFormError;
 
   private final ObservableList<WhRow> items = FXCollections.observableArrayList();
 
@@ -28,8 +36,19 @@ public class WarehouseController extends BaseController {
     colWhName.setCellValueFactory(new PropertyValueFactory<>("name"));
     colWhPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
     colWhActive.setCellValueFactory(new PropertyValueFactory<>("active"));
+
     whTable.setItems(items);
     handleLoad();
+  }
+
+  private void populateUpdateForm(WhRow row) {
+    updateIdField.setText(row.getId());
+    updateNameField.setText(row.getName());
+    updatePhoneField.setText(row.getPhone());
+    // Switch to Update tab (index 2)
+    if (tabPane != null) {
+      tabPane.getSelectionModel().select(2);
+    }
   }
 
   @FXML
@@ -92,6 +111,48 @@ public class WarehouseController extends BaseController {
           handleLoad();
         },
         msg -> setError(whFormError, msg));
+  }
+
+  @FXML
+  private void handleUpdate() {
+    setError(updateFormError, "");
+    String idStr = updateIdField.getText().trim();
+    if (idStr.isEmpty()) {
+      setError(updateFormError, "Выберите склад из списка");
+      return;
+    }
+
+    UUID id = UUID.fromString(idStr);
+    String name = updateNameField.getText().trim();
+    String phone = updatePhoneField.getText().trim();
+
+    UpdateWarehouseRequest req =
+        UpdateWarehouseRequest.builder()
+            .id(id)
+            .name(name.isEmpty() ? null : name)
+            .phone(phone.isEmpty() ? null : phone)
+            .build();
+
+    async(
+        () -> api.updateWarehouse(req),
+        () -> {
+          showSuccess("Склад обновлен");
+          updateIdField.clear();
+          updateNameField.clear();
+          updatePhoneField.clear();
+          handleLoad();
+        },
+        msg -> setError(updateFormError, msg));
+  }
+
+  @FXML
+  private void handleEdit() {
+    WhRow sel = whTable.getSelectionModel().getSelectedItem();
+    if (sel == null) {
+      showError("Выберите склад из списка");
+      return;
+    }
+    populateUpdateForm(sel);
   }
 
   public static class WhRow {

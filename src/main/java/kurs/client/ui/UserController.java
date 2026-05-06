@@ -17,6 +17,7 @@ public class UserController extends BaseController {
   @FXML private TableView<UserRow> userTable;
   @FXML private TableColumn<UserRow, String> colLogin;
   @FXML private TableColumn<UserRow, String> colRole;
+  @FXML private TableColumn<UserRow, String> colEmployee;
   @FXML private TableColumn<UserRow, String> colActive;
   @FXML private TableColumn<UserRow, String> colCreatedAt;
   @FXML private TextField userLoginField;
@@ -30,6 +31,7 @@ public class UserController extends BaseController {
   public void initialize() {
     colLogin.setCellValueFactory(new PropertyValueFactory<>("login"));
     colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
+    colEmployee.setCellValueFactory(new PropertyValueFactory<>("employeeName"));
     colActive.setCellValueFactory(new PropertyValueFactory<>("active"));
     colCreatedAt.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
     userTable.setItems(items);
@@ -103,21 +105,23 @@ public class UserController extends BaseController {
   }
 
   public static class UserRow {
-    private final String id, login, role, active, createdAt;
+    private final String id, login, role, employeeName, active, createdAt;
 
     public static UserRow from(UserResponse u) {
       return new UserRow(
           str(u.getId()),
           str(u.getLogin()),
           str(u.getRole()),
+          u.getEmployeeName() != null ? u.getEmployeeName() : "—",
           u.isActive() ? "Да" : "Нет",
           str(u.getCreatedAt()));
     }
 
-    public UserRow(String id, String l, String r, String a, String c) {
+    public UserRow(String id, String l, String r, String e, String a, String c) {
       this.id = id;
       login = l;
       role = r;
+      employeeName = e;
       active = a;
       createdAt = c;
     }
@@ -132,6 +136,10 @@ public class UserController extends BaseController {
 
     public String getRole() {
       return role;
+    }
+
+    public String getEmployeeName() {
+      return employeeName;
     }
 
     public String getActive() {

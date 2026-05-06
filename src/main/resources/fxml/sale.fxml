@@ -33,7 +33,7 @@
                         <columns>
                             <TableColumn fx:id="colStockName"    text="Товар"/>
                             <TableColumn fx:id="colStockArticle" text="Артикул"  maxWidth="100"/>
-                            <TableColumn fx:id="colStockPrice"   text="Цена ₽"   maxWidth="90"/>
+                            <TableColumn fx:id="colStockPrice"   text="Цена BYN"   maxWidth="90"/>
                             <TableColumn fx:id="colStockQty"     text="Остаток"  maxWidth="80"/>
                         </columns>
                         <columnResizePolicy>
@@ -41,7 +41,7 @@
                         </columnResizePolicy>
                     </TableView>
 
-                    <HBox spacing="8" alignment="CENTER_LEFT">
+                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-toolbar">
                         <Label text="Кол-во:"/>
                         <TextField fx:id="addQtyField" text="1" prefWidth="64"/>
                         <Button text="+ В корзину" styleClass="btn-primary"
@@ -57,7 +57,7 @@
                         <columns>
                             <TableColumn fx:id="colCartName"  text="Товар"/>
                             <TableColumn fx:id="colCartQty"   text="Кол." maxWidth="56"/>
-                            <TableColumn fx:id="colCartPrice" text="₽"    maxWidth="80"/>
+                            <TableColumn fx:id="colCartPrice" text="BYN"    maxWidth="80"/>
                             <TableColumn fx:id="colCartDel"   text=""     maxWidth="44"/>
                         </columns>
                         <columnResizePolicy>
@@ -89,7 +89,7 @@
             <VBox spacing="12" fillWidth="true">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
 
-                <HBox spacing="8" alignment="CENTER_LEFT">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-toolbar">
                     <Label text="Магазин:"/>
                     <TextField fx:id="historyStoreField" prefWidth="180"
                                editable="false" promptText="не выбран"/>
@@ -101,7 +101,7 @@
                     <columns>
                         <TableColumn fx:id="colSaleId"  text="Номер"   maxWidth="100"/>
                         <TableColumn fx:id="colCashier" text="Кассир"/>
-                        <TableColumn fx:id="colTotal"   text="Сумма ₽" maxWidth="100"/>
+                        <TableColumn fx:id="colTotal"   text="Сумма BYN" maxWidth="100"/>
                         <TableColumn fx:id="colDate"    text="Дата"/>
                         <TableColumn fx:id="colReturn"  text="Возврат" maxWidth="76"/>
                     </columns>

@@ -111,6 +111,8 @@
     -fx-border-width: 0;
     -fx-padding: 8 18 8 18;
     -fx-font-size: 13px;
+    -fx-min-width: 100px;
+    -fx-pref-width: -1;
 }
 .button:focused {
     -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.4), 6, 0, 0, 0);
@@ -155,6 +157,17 @@
     -fx-font-weight: bold;
 }
 .btn-warning:hover { -fx-background-color: #d97706; }
+
+/* ── Action Toolbar ─────────────────────────────────────────────────── */
+.action-toolbar {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 8;
+    -fx-padding: 12 16 12 16;
+    -fx-spacing: 10;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
 
 /* ── TextFields ─────────────────────────────────────────────────────── */
 .text-field, .password-field {
