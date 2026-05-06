@@ -84,7 +84,6 @@ public class ReportController extends BaseController {
     storeReportTable.setItems(storeItems);
   }
 
-
   @FXML
   private void handleSalesReport() {
     ReportRequest req = buildRequest(salesFromPicker, salesToPicker);
@@ -124,7 +123,6 @@ public class ReportController extends BaseController {
         null);
   }
 
-
   private ReportRequest buildRequest(DatePicker from, DatePicker to) {
     LocalDate f = from.getValue();
     LocalDate t = to.getValue();
@@ -142,7 +140,6 @@ public class ReportController extends BaseController {
   private static String s(Object o) {
     return o != null ? o.toString() : "—";
   }
-
 
   public static class SalesRow {
     private final String storeName, salesCount, returnsCount, grossRevenue, netRevenue;

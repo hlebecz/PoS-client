@@ -17,6 +17,7 @@ public class MainController extends BaseController {
 
   @FXML private Button navSales;
   @FXML private Button navStock;
+  @FXML private Button navProducts;
   @FXML private Button navEmployees;
   @FXML private Button navStores;
   @FXML private Button navWarehouses;
@@ -32,6 +33,7 @@ public class MainController extends BaseController {
 
     navMap.put(navSales, "sale.fxml");
     navMap.put(navStock, "stock.fxml");
+    navMap.put(navProducts, "product.fxml");
     navMap.put(navEmployees, "employee.fxml");
     navMap.put(navStores, "store.fxml");
     navMap.put(navWarehouses, "warehouse.fxml");
@@ -49,6 +51,9 @@ public class MainController extends BaseController {
     navStores.setManaged(session.isAdmin() || session.isManager());
     navWarehouses.setVisible(session.isAdmin() || session.isManager() || session.isAccountant());
     navWarehouses.setManaged(session.isAdmin() || session.isManager() || session.isAccountant());
+    // Products visible to all authenticated users
+    navProducts.setVisible(true);
+    navProducts.setManaged(true);
 
     // Открываем первый доступный раздел
     switchTo(navSales);

@@ -1,7 +1,6 @@
 package kurs.client.network;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import com.google.gson.Gson;

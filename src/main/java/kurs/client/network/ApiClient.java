@@ -156,6 +156,31 @@ public class ApiClient {
     return parse(sendAuth(RequestType.SET_STOCK, GSON.toJson(req)), StockResponse.class);
   }
 
+  public List<ProductResponse> getProducts() {
+    return parseList(sendAuth(RequestType.GET_PRODUCTS, null), ProductResponse.class);
+  }
+
+  public ProductResponse getProduct(UUID id) {
+    return parse(sendAuth(RequestType.GET_PRODUCT, GSON.toJson(id)), ProductResponse.class);
+  }
+
+  public ProductResponse getProductByArticle(String article) {
+    return parse(
+        sendAuth(RequestType.GET_PRODUCT_BY_ARTICLE, GSON.toJson(article)), ProductResponse.class);
+  }
+
+  public ProductResponse createProduct(CreateProductRequest req) {
+    return parse(sendAuth(RequestType.CREATE_PRODUCT, GSON.toJson(req)), ProductResponse.class);
+  }
+
+  public ProductResponse updateProduct(UpdateProductRequest req) {
+    return parse(sendAuth(RequestType.UPDATE_PRODUCT, GSON.toJson(req)), ProductResponse.class);
+  }
+
+  public void deleteProduct(UUID id) {
+    sendAuth(RequestType.DELETE_PRODUCT, GSON.toJson(id));
+  }
+
   public WarehouseResponse deactivateWarehouse(UUID id) {
     return parse(
         sendAuth(RequestType.DEACTIVATE_WAREHOUSE, GSON.toJson(id)), WarehouseResponse.class);
