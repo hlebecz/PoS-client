@@ -9,10 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import kurs.client.domain.dto.request.SetStockRequest;
-import kurs.client.domain.dto.response.ProductResponse;
-import kurs.client.domain.dto.response.StockResponse;
-import kurs.client.domain.dto.response.StoreResponse;
-import kurs.client.domain.dto.response.WarehouseResponse;
+import kurs.client.domain.dto.response.*;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.ViewName;
 import kurs.client.ui.component.BaseController;
 import kurs.client.ui.component.EntityPickerDialog;
 
@@ -31,6 +30,10 @@ public class StockController extends BaseController {
   @FXML private TableColumn<StockRow, String> colQty;
   @FXML private TableColumn<StockRow, String> colUpdated;
 
+  @FXML private TabPane tabPane;
+  @FXML private Tab listTab;
+  @FXML private Tab updateTab;
+
   private final ObservableList<StockRow> items = FXCollections.observableArrayList();
 
   private UUID filterLocationId = null;
@@ -46,6 +49,10 @@ public class StockController extends BaseController {
     colQty.setCellValueFactory(new PropertyValueFactory<>("quantity"));
     colUpdated.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
     stockTable.setItems(items);
+
+    // Apply permissions - hide update tab if user cannot update stock
+    hideTabIfNoPermission(updateTab, ViewName.STOCK, PermissionAction.UPDATE);
+
     handleLoadAll();
   }
 
@@ -64,13 +71,7 @@ public class StockController extends BaseController {
   private void handlePickFilterLocation() {
     async(
         () -> {
-          List<StoreResponse> stores = api.getStores();
-          List<WarehouseResponse> warehouses = api.getWarehouses();
-          List<StorageLocationItem> locations = new ArrayList<>();
-          stores.forEach(
-              s -> locations.add(new StorageLocationItem(s.getId(), s.getName(), "Магазин")));
-          warehouses.forEach(
-              w -> locations.add(new StorageLocationItem(w.getId(), w.getName(), "Склад")));
+          List<StorageLocationItem> locations = getStorageLocationItems();
 
           javafx.application.Platform.runLater(
               () -> {
@@ -95,6 +96,23 @@ public class StockController extends BaseController {
               });
         },
         null);
+  }
+
+  private List<StorageLocationItem> getStorageLocationItems() {
+    List<StorageLocationItem> locations = new ArrayList<>();
+
+    // All roles can see stores
+    List<StoreBasicResponse> stores = api.getStoresActiveBasic();
+    stores.forEach(s -> locations.add(new StorageLocationItem(s.getId(), s.getName(), "Магазин")));
+
+    // Only non-guest and non-cashier roles can see warehouses
+    if (!session.isGuest() && !session.isCashier()) {
+      List<WarehouseBasicResponse> warehouses = api.getWarehousesActiveBasic();
+      warehouses.forEach(
+          w -> locations.add(new StorageLocationItem(w.getId(), w.getName(), "Склад")));
+    }
+
+    return locations;
   }
 
   @FXML
@@ -122,13 +140,19 @@ public class StockController extends BaseController {
   private void handlePickLocation() {
     async(
         () -> {
-          List<StoreResponse> stores = api.getStores();
-          List<WarehouseResponse> warehouses = api.getWarehouses();
           List<StorageLocationItem> locations = new ArrayList<>();
+
+          // All roles can see stores
+          List<StoreBasicResponse> stores = api.getStoresActiveBasic();
           stores.forEach(
               s -> locations.add(new StorageLocationItem(s.getId(), s.getName(), "Магазин")));
-          warehouses.forEach(
-              w -> locations.add(new StorageLocationItem(w.getId(), w.getName(), "Склад")));
+
+          // Only non-guest and non-cashier roles can see warehouses
+          if (!session.isGuest() && !session.isCashier()) {
+            List<WarehouseBasicResponse> warehouses = api.getWarehousesActiveBasic();
+            warehouses.forEach(
+                w -> locations.add(new StorageLocationItem(w.getId(), w.getName(), "Склад")));
+          }
 
           javafx.application.Platform.runLater(
               () -> {

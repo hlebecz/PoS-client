@@ -13,13 +13,14 @@ import javafx.scene.layout.HBox;
 import kurs.client.domain.dto.request.CreateSaleRequest;
 import kurs.client.domain.dto.response.SaleResponse;
 import kurs.client.domain.dto.response.StockResponse;
-import kurs.client.domain.dto.response.StoreResponse;
+import kurs.client.domain.dto.response.StoreBasicResponse;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.ViewName;
 import kurs.client.ui.component.BaseController;
 import kurs.client.ui.component.EntityPickerDialog;
 
 public class SaleController extends BaseController {
 
-  // ── Остатки ───────────────────────────────────────────────────────────────
   @FXML private HBox storePickerRow;
   @FXML private TextField stockStoreField;
   @FXML private TableView<StockRow> stockTable;
@@ -29,7 +30,6 @@ public class SaleController extends BaseController {
   @FXML private TableColumn<StockRow, String> colStockQty;
   @FXML private TextField addQtyField;
 
-  // ── Корзина ───────────────────────────────────────────────────────────────
   @FXML private TableView<CartItem> cartTable;
   @FXML private TableColumn<CartItem, String> colCartName;
   @FXML private TableColumn<CartItem, String> colCartQty;
@@ -38,7 +38,6 @@ public class SaleController extends BaseController {
   @FXML private Label totalLabel;
   @FXML private Label saleStatusLabel;
 
-  // ── История ───────────────────────────────────────────────────────────────
   @FXML private TextField historyStoreField;
   @FXML private TableView<SaleRow> historyTable;
   @FXML private TableColumn<SaleRow, String> colSaleId;
@@ -46,6 +45,11 @@ public class SaleController extends BaseController {
   @FXML private TableColumn<SaleRow, String> colTotal;
   @FXML private TableColumn<SaleRow, String> colDate;
   @FXML private TableColumn<SaleRow, String> colReturn;
+
+  @FXML private TabPane tabPane;
+  @FXML private Tab createTab;
+  @FXML private Tab listTab;
+  @FXML private Button returnButton;
 
   private UUID currentStoreId = null; // для остатков
   private UUID historyStoreId = null; // для истории
@@ -105,6 +109,10 @@ public class SaleController extends BaseController {
     colReturn.setCellValueFactory(new PropertyValueFactory<>("returnStr"));
     historyTable.setItems(historyItems);
 
+    // Apply permissions
+    hideTabIfNoPermission(createTab, ViewName.SALES, PermissionAction.CREATE);
+    hideIfNoPermission(returnButton, ViewName.SALES, PermissionAction.UPDATE);
+
     // Кассир не может выбирать точку — берётся автоматически
     boolean canPickStore = session.isAdmin() || session.isManager();
     storePickerRow.setVisible(canPickStore);
@@ -118,22 +126,19 @@ public class SaleController extends BaseController {
     updateTotal();
   }
 
-  // ── Выбор точки ─────────────────────────────────────────────────────────
 
   @FXML
   private void pickStockStore() {
     async(
         () -> {
-          List<StoreResponse> stores = api.getActiveStores();
+          List<StoreBasicResponse> stores = api.getStoresActiveBasic();
           Platform.runLater(
               () -> {
                 UUID id =
                     new EntityPickerDialog<>(
                             getStage(stockStoreField),
                             "Выберите торговую точку",
-                            List.of(
-                                new EntityPickerDialog.Col<>("Название", "name"),
-                                new EntityPickerDialog.Col<>("Телефон", "phone")),
+                            List.of(new EntityPickerDialog.Col<>("Название", "name")),
                             stores,
                             s -> s.getId())
                         .showAndWait();
@@ -155,16 +160,14 @@ public class SaleController extends BaseController {
   private void pickHistoryStore() {
     async(
         () -> {
-          List<StoreResponse> stores = api.getActiveStores();
+          List<StoreBasicResponse> stores = api.getStoresActiveBasic();
           Platform.runLater(
               () -> {
                 UUID id =
                     new EntityPickerDialog<>(
                             getStage(historyStoreField),
                             "Выберите торговую точку",
-                            List.of(
-                                new EntityPickerDialog.Col<>("Название", "name"),
-                                new EntityPickerDialog.Col<>("Телефон", "phone")),
+                            List.of(new EntityPickerDialog.Col<>("Название", "name")),
                             stores,
                             s -> s.getId())
                         .showAndWait();
@@ -209,7 +212,6 @@ public class SaleController extends BaseController {
         null);
   }
 
-  // ── Корзина ──────────────────────────────────────────────────────────────
 
   @FXML
   private void handleAddFromStock() {
@@ -310,7 +312,6 @@ public class SaleController extends BaseController {
     totalLabel.setText(total.setScale(2, java.math.RoundingMode.HALF_UP) + " BYN");
   }
 
-
   @FXML
   private void handleLoadHistory() {
     if (historyStoreId == null) {
@@ -344,7 +345,6 @@ public class SaleController extends BaseController {
         });
   }
 
-  // ── Row models ────────────────────────────────────────────────────────────
 
   public static class StockRow {
     private final String productId, productName, productArticle, productPrice, quantity;

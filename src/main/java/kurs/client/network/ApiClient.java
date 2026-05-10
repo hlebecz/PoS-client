@@ -46,6 +46,10 @@ public class ApiClient {
     return GSON.fromJson(resp.getData(), String.class);
   }
 
+  public void register(LoginRequest req) {
+    session.getClient().send(new Request(RequestType.REGISTER, GSON.toJson(req)));
+  }
+
   public void logout() {
     sendAuth(RequestType.LOGOUT, null);
   }
@@ -107,6 +111,10 @@ public class ApiClient {
     return parseList(sendAuth(RequestType.GET_STORES_ACTIVE, null), StoreResponse.class);
   }
 
+  public List<StoreBasicResponse> getStoresActiveBasic() {
+    return parseList(sendAuth(RequestType.GET_STORES_ACTIVE_BASIC, null), StoreBasicResponse.class);
+  }
+
   public StoreResponse createStore(CreateStoreRequest req) {
     return parse(sendAuth(RequestType.CREATE_STORE, GSON.toJson(req)), StoreResponse.class);
   }
@@ -129,6 +137,11 @@ public class ApiClient {
 
   public List<WarehouseResponse> getWarehouses() {
     return parseList(sendAuth(RequestType.GET_WAREHOUSES, null), WarehouseResponse.class);
+  }
+
+  public List<WarehouseBasicResponse> getWarehousesActiveBasic() {
+    return parseList(
+        sendAuth(RequestType.GET_WAREHOUSES_ACTIVE_BASIC, null), WarehouseBasicResponse.class);
   }
 
   public WarehouseResponse createWarehouse(CreateWarehouseRequest req) {

@@ -13,6 +13,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import kurs.client.domain.dto.request.CreateProductRequest;
 import kurs.client.domain.dto.request.UpdateProductRequest;
 import kurs.client.domain.dto.response.ProductResponse;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.ViewName;
 import kurs.client.ui.component.BaseController;
 
 public class ProductController extends BaseController {
@@ -24,6 +26,9 @@ public class ProductController extends BaseController {
   @FXML private TableColumn<ProductRow, String> colCreatedAt;
 
   @FXML private TabPane tabPane;
+  @FXML private Tab listTab;
+  @FXML private Tab createTab;
+  @FXML private Tab updateTab;
   @FXML private TextField searchField;
   @FXML private TextField nameField;
   @FXML private TextField articleField;
@@ -36,6 +41,9 @@ public class ProductController extends BaseController {
   @FXML private TextField updatePriceField;
   @FXML private Label updateFormError;
 
+  @FXML private Button editButton;
+  @FXML private Button deleteButton;
+
   private final ObservableList<ProductRow> items = FXCollections.observableArrayList();
 
   @FXML
@@ -46,6 +54,13 @@ public class ProductController extends BaseController {
     colCreatedAt.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
 
     productTable.setItems(items);
+
+    // Apply permissions
+    hideTabIfNoPermission(createTab, ViewName.PRODUCTS, PermissionAction.CREATE);
+    hideTabIfNoPermission(updateTab, ViewName.PRODUCTS, PermissionAction.UPDATE);
+    hideIfNoPermission(editButton, ViewName.PRODUCTS, PermissionAction.UPDATE);
+    hideIfNoPermission(deleteButton, ViewName.PRODUCTS, PermissionAction.DELETE);
+
     handleLoad();
   }
 

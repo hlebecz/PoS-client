@@ -6,9 +6,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 
 import kurs.client.network.ApiClient;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.PermissionService;
+import kurs.client.permission.ViewName;
 import kurs.client.session.Session;
 
 public abstract class BaseController {
@@ -76,5 +80,43 @@ public abstract class BaseController {
 
   protected static String str(Object o) {
     return o != null ? o.toString() : "—";
+  }
+
+  /**
+   * Check if the current user has permission to perform the specified action on the view.
+   *
+   * @param view the view name
+   * @param action the permission action
+   * @return true if the user has permission, false otherwise
+   */
+  protected boolean hasPermission(ViewName view, PermissionAction action) {
+    return PermissionService.hasPermission(session.getRole(), view, action);
+  }
+
+  /**
+   * Hide a UI node if the current user does not have permission to perform the specified action.
+   *
+   * @param node the UI node to hide
+   * @param view the view name
+   * @param action the permission action
+   */
+  protected void hideIfNoPermission(Node node, ViewName view, PermissionAction action) {
+    if (node != null && !hasPermission(view, action)) {
+      node.setVisible(false);
+      node.setManaged(false);
+    }
+  }
+
+  /**
+   * Hide a tab if the current user does not have permission to perform the specified action.
+   *
+   * @param tab the tab to hide
+   * @param view the view name
+   * @param action the permission action
+   */
+  protected void hideTabIfNoPermission(Tab tab, ViewName view, PermissionAction action) {
+    if (tab != null && !hasPermission(view, action)) {
+      tab.getTabPane().getTabs().remove(tab);
+    }
   }
 }

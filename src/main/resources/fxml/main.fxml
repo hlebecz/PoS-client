@@ -15,14 +15,14 @@
 
             <!-- Header -->
             <VBox styleClass="sidebar-header" spacing="4">
-                <Label text="⚡ Point of Sale" styleClass="sidebar-title"/>
+                <Label text="Point of Sale" styleClass="sidebar-title"/>
                 <Label fx:id="userLabel" styleClass="sidebar-user"/>
             </VBox>
 
             <!-- Nav items -->
             <Button fx:id="navSales"      text="🛒  Продажи"      styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
             <Button fx:id="navStock"      text="📦  Остатки"       styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
-            <Button fx:id="navProducts"   text="🏷️  Товары"        styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
+            <Button fx:id="navProducts"   text="🛍️  Товары"        styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
             <Button fx:id="navEmployees"  text="👥  Сотрудники"    styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
             <Button fx:id="navStores"     text="🏪  Магазины"      styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>
             <Button fx:id="navWarehouses" text="🏭  Склады"         styleClass="nav-item" maxWidth="Infinity" onAction="#navigate"/>

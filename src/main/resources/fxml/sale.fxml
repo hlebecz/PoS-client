@@ -10,10 +10,9 @@
 
     <Label text="Продажи" styleClass="page-title"/>
 
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" styleClass="app-tab-pane">
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" styleClass="app-tab-pane">
 
-        <!-- ═══ НОВАЯ ПРОДАЖА ═══ -->
-        <Tab text="🛒  Новая продажа">
+        <Tab fx:id="createTab" text="Новая продажа">
             <HBox spacing="16" fillHeight="true">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
 
@@ -49,7 +48,6 @@
                     </HBox>
                 </VBox>
 
-                <!-- Корзина -->
                 <VBox spacing="10" prefWidth="340" minWidth="290" styleClass="card">
                     <Label text="Корзина" styleClass="section-title"/>
 
@@ -84,8 +82,7 @@
             </HBox>
         </Tab>
 
-        <!-- ═══ ИСТОРИЯ ═══ -->
-        <Tab text="📋  История">
+        <Tab fx:id="listTab" text="История">
             <VBox spacing="12" fillWidth="true">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
 
@@ -111,7 +108,7 @@
                 </TableView>
 
                 <HBox alignment="CENTER_RIGHT">
-                    <Button text="Оформить возврат" styleClass="btn-danger"
+                    <Button fx:id="returnButton" text="Оформить возврат" styleClass="btn-danger"
                             onAction="#handleProcessReturn"/>
                 </HBox>
             </VBox>

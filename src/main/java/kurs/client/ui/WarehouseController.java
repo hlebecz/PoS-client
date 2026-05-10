@@ -10,6 +10,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import kurs.client.domain.dto.request.CreateWarehouseRequest;
 import kurs.client.domain.dto.request.UpdateWarehouseRequest;
 import kurs.client.domain.dto.response.WarehouseResponse;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.ViewName;
 import kurs.client.ui.component.BaseController;
 
 public class WarehouseController extends BaseController {
@@ -20,6 +22,9 @@ public class WarehouseController extends BaseController {
   @FXML private TableColumn<WhRow, String> colWhActive;
 
   @FXML private TabPane tabPane;
+  @FXML private Tab listTab;
+  @FXML private Tab createTab;
+  @FXML private Tab updateTab;
   @FXML private TextField whNameField;
   @FXML private TextField whPhoneField;
   @FXML private Label whFormError;
@@ -28,6 +33,10 @@ public class WarehouseController extends BaseController {
   @FXML private TextField updateNameField;
   @FXML private TextField updatePhoneField;
   @FXML private Label updateFormError;
+
+  @FXML private Button editButton;
+  @FXML private Button deactivateButton;
+  @FXML private Button activateButton;
 
   private final ObservableList<WhRow> items = FXCollections.observableArrayList();
 
@@ -38,6 +47,14 @@ public class WarehouseController extends BaseController {
     colWhActive.setCellValueFactory(new PropertyValueFactory<>("active"));
 
     whTable.setItems(items);
+
+    // Apply permissions
+    hideTabIfNoPermission(createTab, ViewName.WAREHOUSES, PermissionAction.CREATE);
+    hideTabIfNoPermission(updateTab, ViewName.WAREHOUSES, PermissionAction.UPDATE);
+    hideIfNoPermission(editButton, ViewName.WAREHOUSES, PermissionAction.UPDATE);
+    hideIfNoPermission(deactivateButton, ViewName.WAREHOUSES, PermissionAction.UPDATE);
+    hideIfNoPermission(activateButton, ViewName.WAREHOUSES, PermissionAction.UPDATE);
+
     handleLoad();
   }
 

@@ -10,15 +10,15 @@
 
     <Label text="Сотрудники" styleClass="page-title"/>
 
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
-        <Tab text="Список">
+        <Tab fx:id="listTab" text="Список">
             <VBox spacing="10">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-toolbar">
                     <Button text="Обновить" styleClass="btn-primary" onAction="#handleLoad"/>
                     <Separator orientation="VERTICAL"/>
-                    <Button text="Уволить" styleClass="btn-danger" onAction="#handleFire"/>
+                    <Button fx:id="fireButton" text="Уволить" styleClass="btn-danger" onAction="#handleFire"/>
                 </HBox>
                 <TableView fx:id="empTable" VBox.vgrow="ALWAYS">
                     <columns>
@@ -37,7 +37,7 @@
             </VBox>
         </Tab>
 
-        <Tab text="Добавить">
+        <Tab fx:id="createTab" text="Добавить">
             <VBox spacing="14">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
                 <GridPane hgap="12" vgap="10">

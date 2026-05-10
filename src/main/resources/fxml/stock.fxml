@@ -10,8 +10,8 @@
 
     <Label text="Остатки товаров" styleClass="page-title"/>
 
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-        <Tab text="Список">
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <Tab fx:id="listTab" text="Список">
             <VBox spacing="10">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="action-toolbar">
@@ -37,7 +37,7 @@
                 </TableView>
             </VBox>
         </Tab>
-        <Tab text="Установить остаток">
+        <Tab fx:id="updateTab" text="Установить остаток">
             <VBox spacing="14">
                 <padding><Insets top="14" right="0" bottom="0" left="0"/></padding>
                 <GridPane hgap="12" vgap="10">

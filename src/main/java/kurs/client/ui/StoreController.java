@@ -11,6 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import kurs.client.domain.dto.request.CreateStoreRequest;
 import kurs.client.domain.dto.request.UpdateStoreRequest;
 import kurs.client.domain.dto.response.*;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.ViewName;
 import kurs.client.ui.component.BaseController;
 import kurs.client.ui.component.EntityPickerDialog;
 
@@ -24,6 +26,9 @@ public class StoreController extends BaseController {
   @FXML private TableColumn<StoreRow, String> colStoreActive;
 
   @FXML private TabPane tabPane;
+  @FXML private Tab listTab;
+  @FXML private Tab createTab;
+  @FXML private Tab updateTab;
   @FXML private TextField storeNameField;
   @FXML private TextField storePhoneField;
   @FXML private TextField storeManagerField;
@@ -36,6 +41,10 @@ public class StoreController extends BaseController {
   @FXML private TextField updateManagerField;
   @FXML private TextField updateWhField;
   @FXML private Label updateFormError;
+
+  @FXML private Button editButton;
+  @FXML private Button deactivateButton;
+  @FXML private Button activateButton;
 
   private UUID selectedManagerId = null;
   private UUID selectedWarehouseId = null;
@@ -53,6 +62,14 @@ public class StoreController extends BaseController {
     colStoreActive.setCellValueFactory(new PropertyValueFactory<>("active"));
 
     storeTable.setItems(items);
+
+    // Apply permissions - Manager can only update, not create
+    hideTabIfNoPermission(createTab, ViewName.STORES, PermissionAction.CREATE);
+    hideTabIfNoPermission(updateTab, ViewName.STORES, PermissionAction.UPDATE);
+    hideIfNoPermission(editButton, ViewName.STORES, PermissionAction.UPDATE);
+    hideIfNoPermission(deactivateButton, ViewName.STORES, PermissionAction.UPDATE);
+    hideIfNoPermission(activateButton, ViewName.STORES, PermissionAction.UPDATE);
+
     handleLoad();
   }
 

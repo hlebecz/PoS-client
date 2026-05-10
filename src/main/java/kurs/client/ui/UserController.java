@@ -10,6 +10,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import kurs.client.domain.dto.request.CreateUserRequest;
 import kurs.client.domain.dto.response.UserResponse;
 import kurs.client.domain.entity.UserRole;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.ViewName;
 import kurs.client.ui.component.BaseController;
 
 public class UserController extends BaseController {
@@ -20,10 +22,17 @@ public class UserController extends BaseController {
   @FXML private TableColumn<UserRow, String> colEmployee;
   @FXML private TableColumn<UserRow, String> colActive;
   @FXML private TableColumn<UserRow, String> colCreatedAt;
+
+  @FXML private TabPane tabPane;
+  @FXML private Tab listTab;
+  @FXML private Tab createTab;
   @FXML private TextField userLoginField;
   @FXML private PasswordField userPassField;
   @FXML private ComboBox<UserRole> userRoleBox;
   @FXML private Label userFormError;
+
+  @FXML private Button deactivateButton;
+  @FXML private Button activateButton;
 
   private final ObservableList<UserRow> items = FXCollections.observableArrayList();
 
@@ -36,6 +45,12 @@ public class UserController extends BaseController {
     colCreatedAt.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
     userTable.setItems(items);
     userRoleBox.setItems(FXCollections.observableArrayList(UserRole.values()));
+
+    // Apply permissions
+    hideTabIfNoPermission(createTab, ViewName.USERS, PermissionAction.CREATE);
+    hideIfNoPermission(deactivateButton, ViewName.USERS, PermissionAction.UPDATE);
+    hideIfNoPermission(activateButton, ViewName.USERS, PermissionAction.UPDATE);
+
     handleLoad();
   }
 

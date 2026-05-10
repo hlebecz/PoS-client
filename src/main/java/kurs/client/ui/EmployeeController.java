@@ -11,6 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import kurs.client.domain.dto.request.*;
 import kurs.client.domain.dto.response.*;
+import kurs.client.permission.PermissionAction;
+import kurs.client.permission.ViewName;
 import kurs.client.ui.component.BaseController;
 import kurs.client.ui.component.EntityPickerDialog;
 
@@ -25,6 +27,9 @@ public class EmployeeController extends BaseController {
   @FXML private TableColumn<EmpRow, String> colEmpHired;
   @FXML private TableColumn<EmpRow, String> colEmpFired;
 
+  @FXML private TabPane tabPane;
+  @FXML private Tab listTab;
+  @FXML private Tab createTab;
   @FXML private TextField empStoreField;
   @FXML private TextField empUserField;
   @FXML private TextField empName;
@@ -34,6 +39,8 @@ public class EmployeeController extends BaseController {
   @FXML private TextField empEmail;
   @FXML private DatePicker empHiredAt;
   @FXML private Label empFormError;
+
+  @FXML private Button fireButton;
 
   private UUID selectedStoreId = null;
   private UUID selectedUserId = null;
@@ -50,6 +57,11 @@ public class EmployeeController extends BaseController {
     colEmpHired.setCellValueFactory(new PropertyValueFactory<>("hiredAt"));
     colEmpFired.setCellValueFactory(new PropertyValueFactory<>("firedAt"));
     empTable.setItems(items);
+
+    // Apply permissions
+    hideTabIfNoPermission(createTab, ViewName.EMPLOYEES, PermissionAction.CREATE);
+    hideIfNoPermission(fireButton, ViewName.EMPLOYEES, PermissionAction.UPDATE);
+
     handleLoad();
   }
 

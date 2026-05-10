@@ -1,6 +1,6 @@
 package kurs.client.ui;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -25,7 +25,7 @@ public class MainController extends BaseController {
   @FXML private Button navUsers;
 
   private Button activeNav;
-  private final Map<Button, String> navMap = new HashMap<>();
+  private final Map<Button, String> navMap = new LinkedHashMap<>();
 
   @FXML
   public void initialize() {
@@ -40,7 +40,6 @@ public class MainController extends BaseController {
     navMap.put(navReports, "report.fxml");
     navMap.put(navUsers, "user.fxml");
 
-
     navUsers.setVisible(session.isAdmin());
     navUsers.setManaged(session.isAdmin());
     navReports.setVisible(session.isAdmin() || session.isAccountant());
@@ -51,13 +50,17 @@ public class MainController extends BaseController {
     navStores.setManaged(session.isAdmin() || session.isManager());
     navWarehouses.setVisible(session.isAdmin() || session.isManager() || session.isAccountant());
     navWarehouses.setManaged(session.isAdmin() || session.isManager() || session.isAccountant());
-
+    navSales.setVisible(!session.isGuest());
+    navSales.setManaged(!session.isGuest());
 
     navProducts.setVisible(true);
     navProducts.setManaged(true);
 
+    navStock.setVisible(true);
+    navStock.setManaged(true);
+
     // Открываем первый доступный раздел
-    switchTo(navSales);
+    openFirstTab();
   }
 
   @FXML
@@ -65,8 +68,16 @@ public class MainController extends BaseController {
     switchTo((Button) e.getSource());
   }
 
-  private void switchTo(Button nav) {
-    if (!nav.isVisible()) return;
+  private void openFirstTab() {
+    for (Button button : navMap.keySet()) {
+      if (switchTo(button)) {
+        return;
+      }
+    }
+  }
+
+  private boolean switchTo(Button nav) {
+    if (!nav.isVisible()) return false;
 
     // Убираем активный стиль с предыдущей кнопки
     if (activeNav != null) {
@@ -80,19 +91,20 @@ public class MainController extends BaseController {
 
     // Загружаем панель
     String fxml = navMap.get(nav);
-    if (fxml == null) return;
+    if (fxml == null) return false;
 
     try {
       LoadResult<?> result = loadFxml(fxml);
       contentPane.getChildren().setAll(result.root());
 
-      // Передаём ссылку на MainController если нужна
       if (result.controller() instanceof NeedsMainController c) {
         c.setMainController(this);
       }
     } catch (Exception ex) {
       showError("Не удалось загрузить раздел: " + ex.getMessage());
+      return false;
     }
+    return true;
   }
 
   @FXML
