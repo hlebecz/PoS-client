@@ -11,12 +11,12 @@
 
 /* ── Login ─────────────────────────────────────────────────────────── */
 .login-root {
-    -fx-background-color: #0f172a;
+    -fx-background-color: transparent;
 }
 .login-card {
     -fx-background-color: white;
     -fx-background-radius: 14;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.28), 28, 0, 0, 6);
+    /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.28), 28, 0, 0, 6);*/
 }
 .login-title {
     -fx-font-size: 22px;

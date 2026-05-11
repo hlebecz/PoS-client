@@ -9,7 +9,7 @@
            styleClass="login-root"
            stylesheets="@../css/app.css">
 
-    <VBox styleClass="login-card" maxWidth="340" alignment="CENTER" spacing="14">
+    <VBox styleClass="login-card" maxWidth="380" alignment="CENTER" spacing="14">
         <padding><Insets top="40" right="48" bottom="40" left="48"/></padding>
 
         <Label text="Point of Sale" styleClass="login-title"/>

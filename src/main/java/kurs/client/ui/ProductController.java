@@ -55,7 +55,6 @@ public class ProductController extends BaseController {
 
     productTable.setItems(items);
 
-    // Apply permissions
     hideTabIfNoPermission(createTab, ViewName.PRODUCTS, PermissionAction.CREATE);
     hideTabIfNoPermission(updateTab, ViewName.PRODUCTS, PermissionAction.UPDATE);
     hideIfNoPermission(editButton, ViewName.PRODUCTS, PermissionAction.UPDATE);

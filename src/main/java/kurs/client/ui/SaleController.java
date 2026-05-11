@@ -126,7 +126,6 @@ public class SaleController extends BaseController {
     updateTotal();
   }
 
-
   @FXML
   private void pickStockStore() {
     async(
@@ -211,7 +210,6 @@ public class SaleController extends BaseController {
         },
         null);
   }
-
 
   @FXML
   private void handleAddFromStock() {
@@ -344,7 +342,6 @@ public class SaleController extends BaseController {
           handleLoadHistory();
         });
   }
-
 
   public static class StockRow {
     private final String productId, productName, productArticle, productPrice, quantity;
